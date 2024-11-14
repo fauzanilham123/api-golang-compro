@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8001:8001"
+    image: api-golang-compro-v2
+  db:
+    image: mysql:latest
+    restart: always
+    container_name: api-golang-compro-v2-db
+    environment:
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    ports:
+      - "3305:3305"
+    volumes:
+      - my-db:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: api-golang-compro-v2-phpmyadmin
+    links:
+      - db
+    environment:
+      PMA_HOST: localhost
+      PMA_PORT: 3305
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8081:80
+volumes:
+  my-db:
